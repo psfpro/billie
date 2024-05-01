@@ -1,0 +1,43 @@
+framework:
+    messenger:
+        failure_transport: failed
+        default_bus: command.bus
+        buses:
+            command.bus:
+                middleware:
+                    - validation
+                    - dispatch_after_current_bus
+                    - doctrine_transaction
+            query.bus:
+                middleware:
+                    - validation
+                    - dispatch_after_current_bus
+            event.bus:
+                default_middleware: allow_no_handlers
+                middleware:
+                    - dispatch_after_current_bus
+            ai.bus:
+                middleware:
+                    - validation
+                    - dispatch_after_current_bus
+                    - doctrine_transaction
+        transports:
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    use_notify: true
+                    check_delayed_interval: 60000
+                retry_strategy:
+                    max_retries: 3
+                    multiplier: 2
+            failed: 'doctrine://default?queue_name=failed'
+            # sync: 'sync://'
+
+        routing:
+            Symfony\Component\Mailer\Messenger\SendEmailMessage: async
+            Symfony\Component\Notifier\Message\ChatMessage: async
+            Symfony\Component\Notifier\Message\SmsMessage: async
+
+            # Route your messages to the transports
+            App\Space\Infrastructure\AI\Command\*: async

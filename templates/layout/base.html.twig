@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% block description %}{% endblock description %}"/>
+    <meta name="keywords" content="{% block keywords %}{% endblock keywords %}"/>
+    <meta property="og:image" content="{% block image %}/images/cover.jpg{% endblock image %}"/>
+    <meta name="yandex-verification" content="d868803b667b179b"/>
+    <title>{% block title %}Billie{% endblock %}</title>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+    <style>
+        @media only screen and (min-width: 992px) {
+            body {
+                font-size: 1.2rem;
+            }
+        }
+
+        .breadcrumb-chevron {
+            --bs-breadcrumb-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d'%3E%3Cpath fill-rule='evenodd' d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            gap: .5rem;
+        }
+
+        .breadcrumb-chevron .breadcrumb-item {
+            display: flex;
+            gap: inherit;
+            align-items: center;
+            padding-left: 0;
+            line-height: 1;
+        }
+
+        .breadcrumb-chevron .breadcrumb-item::before {
+            gap: inherit;
+            float: none;
+            width: 1rem;
+            height: 1rem;
+        }
+    </style>
+</head>
+<body>
+<header class="p-3 mb-2 text-bg-dark">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 px-4 h3 text-white text-decoration-none">
+                Billie
+            </a>
+        </div>
+    </div>
+</header>
+<div class="container container-main">
+    {% block content %}{% endblock %}
+</div>
+<div class="container">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center pt-3 my-4 border-top">
+        <p class="col-md-4 mb-0 text-white">© 2024 Billie</p>
+    </footer>
+</div>
+</body>
+</html>

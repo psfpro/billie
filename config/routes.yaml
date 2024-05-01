@@ -1,0 +1,3 @@
+landing:
+  resource: '../src/Common/Infrastructure/UserInterface/Controller/'
+  type: annotation

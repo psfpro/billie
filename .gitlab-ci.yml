@@ -1,0 +1,28 @@
+image: php:8.2-fpm-alpine
+
+before_script:
+  - apk update
+  - apk add --update --no-cache rsync openssh sshpass composer unzip npm
+
+stages:
+  - production
+
+production:
+  stage: production
+  script:
+    - composer install --ignore-platform-reqs
+    - npm install
+    - npm run build
+    - sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no -l root $SSH_USER@$SSH_HOST php -v
+    - rsync --rsh="sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no -l root" -av --delete ./vendor $SSH_USER@$SSH_HOST:/var/www
+    - rsync --rsh="sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no -l root" -av --delete ./public/build $SSH_USER@$SSH_HOST:/var/www/public
+    - rsync --rsh="sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no -l root" -av --delete --exclude-from=.gitignore ./ $SSH_USER@$SSH_HOST:/var/www
+    - sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no -l root $SSH_USER@$SSH_HOST php /var/www/bin/console cache:clear
+    - sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no -l root $SSH_USER@$SSH_HOST php /var/www/bin/console doctrine:migrations:migrate --no-interaction
+  environment:
+    name: production
+    url: https://zenbox.group/
+  only:
+    - master
+  tags:
+    - docker
